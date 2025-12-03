@@ -1,9 +1,9 @@
 import type { APIRoute } from "astro";
-import { generateOgImageForSite } from "@/utils/generateOgImages";
 
+// Dynamic OG image generation is disabled in this deployment target
 export const GET: APIRoute = async () => {
-  const buffer = await generateOgImageForSite();
-  return new Response(new Uint8Array(buffer), {
-    headers: { "Content-Type": "image/png" },
+  return new Response(null, {
+    status: 404,
+    statusText: "OG image generation is disabled",
   });
 };
