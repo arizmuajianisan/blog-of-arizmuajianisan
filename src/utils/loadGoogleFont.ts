@@ -1,7 +1,11 @@
 async function loadGoogleFont(
   font: string,
   text: string,
-  weight: number
+  weight: number,
+  slant: number,
+  width: number,
+  grade: number,
+  roundness: number
 ): Promise<ArrayBuffer> {
   const API = `https://fonts.googleapis.com/css2?family=${font}:wght@${weight}&text=${encodeURIComponent(text)}`;
 
@@ -32,27 +36,47 @@ async function loadGoogleFont(
 async function loadGoogleFonts(
   text: string
 ): Promise<
-  Array<{ name: string; data: ArrayBuffer; weight: number; style: string }>
+  Array<{ name: string; data: ArrayBuffer; weight: number; style: string; css: string }>
 > {
   const fontsConfig = [
     {
-      name: "Montserrat",
-      font: "Montserrat",
-      weight: 500,
+      name: "Google Sans Flex",
+      font: "Google Sans Flex",
+      weight: 800,
       style: "normal",
+      slant: 0,
+      width: 100,
+      grade: 0,
+      roundness: 0,
     },
     {
-      name: "Montserrat",
-      font: "Montserrat",
-      weight: 700,
+      name: "Google Sans Flex",
+      font: "Google Sans Flex",
+      weight: 900,
       style: "bold",
+      slant: 0,
+      width: 100,
+      grade: 0,
+      roundness: 0,
     },
   ];
 
   const fonts = await Promise.all(
-    fontsConfig.map(async ({ name, font, weight, style }) => {
-      const data = await loadGoogleFont(font, text, weight);
-      return { name, data, weight, style };
+    fontsConfig.map(async ({ name, font, weight, style, slant, width, grade, roundness }) => {
+      const data = await loadGoogleFont(font, text, weight, slant, width, grade, roundness);
+      const uniquifier = Math.random().toString(36).substring(2, 8);
+      const css = `.google-sans-flex-${uniquifier} {
+  font-family: "Google Sans Flex", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: ${weight};
+  font-style: ${style};
+  font-variation-settings:
+    "slnt" ${slant},
+    "wdth" ${width},
+    "GRAD" ${grade},
+    "ROND" ${roundness};
+}`;
+      return { name, data, weight, style, css };
     })
   );
 
